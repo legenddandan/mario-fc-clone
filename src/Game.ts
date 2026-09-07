@@ -16,18 +16,32 @@ export class Game{
   lastTime=0;
 
 
+  private fixedStep = 1 / 60;
+
+
+  private accumulator = 0;
+
+
+  private fpsAccum = 0;
+
+
+  private fpsFrames = 0;
+
+
+  private fps = 0;
+
 
   constructor(
     private canvas:HTMLCanvasElement
   ){
 
-    this.input=new Input();
+    this.input = new Input();
 
-    this.mario=
+    this.mario =
       new Mario(this.input);
 
 
-    this.renderer=
+    this.renderer =
       new Renderer(canvas);
 
 
@@ -48,20 +62,65 @@ export class Game{
   loop(time:number){
 
 
+    if(this.lastTime===0){
+
+      this.lastTime=time;
+
+      requestAnimationFrame(
+        this.loop.bind(this)
+      );
+
+      return;
+
+    }
+
+
     const delta =
-      (time-this.lastTime)/1000;
+      (time - this.lastTime) / 1000;
 
 
-    this.lastTime=time;
+    this.lastTime = time;
 
 
-    this.update(delta);
+    const clampedDelta =
+      Math.min(delta, 0.1);
+
+
+    this.accumulator += clampedDelta;
+
+
+    while(
+      this.accumulator >= this.fixedStep
+    ){
+
+      this.update(this.fixedStep);
+
+      this.accumulator -= this.fixedStep;
+
+    }
+
+
+    this.fpsAccum += clampedDelta;
+
+    this.fpsFrames += 1;
+
+
+    if(this.fpsAccum >= 1){
+
+      this.fps =
+        this.fpsFrames / this.fpsAccum;
+
+      this.fpsAccum = 0;
+
+      this.fpsFrames = 0;
+
+    }
 
 
     this.renderer.render(
-      this.mario
+      this.mario,
+      this.fps
     );
-
 
 
     requestAnimationFrame(

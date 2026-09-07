@@ -15,13 +15,16 @@ export class Mario extends Entity{
   gravity=700;
 
 
+  private ground=208;
+
+
   grounded=false;
 
 
 
   constructor(input:Input){
 
-    super(100,300);
+    super(100,176);
 
     this.input=input;
 
@@ -79,15 +82,12 @@ export class Mario extends Entity{
 
     // 临时地面
 
-    const ground=400;
-
-
     if(
-      this.position.y + this.height >= ground
+      this.position.y + this.height >= this.ground
     ){
 
       this.position.y =
-        ground-this.height;
+        this.ground-this.height;
 
 
       this.velocity.y=0;

@@ -177,6 +177,12 @@ export class Game{
 
     this.mario.update(delta);
 
+    for(const entity of this.level.entities){
+
+      entity.update(delta);
+
+    }
+
     this.level.resolveMarioCollision(this.mario);
 
     this.camera.follow(

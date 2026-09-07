@@ -1,19 +1,4 @@
-export interface LevelData {
-
-  width:number;
-
-  height:number;
-
-
-  spawn:{
-    x:number;
-    y:number;
-  };
-
-
-  tiles:number[][];
-
-}
+import type { LevelData } from "../types/level";
 
 
 export class LevelLoader {
@@ -31,7 +16,7 @@ export class LevelLoader {
     if(!response.ok){
 
       throw new Error(
-        `Failed loading ${path}`
+        `Cannot load ${path}`
       );
 
     }

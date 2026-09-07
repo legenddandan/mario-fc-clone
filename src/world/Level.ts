@@ -1,7 +1,9 @@
 import { TileMap } from "./TileMap";
 import { CollisionResolver } from "./CollisionResolver";
 import { Mario } from "../entities/Mario";
-import type { LevelData } from "./LevelLoader";
+import type { LevelData } from "../types/level";
+import { EntitySpawner } from "./EntitySpawner";
+import { Entity } from "../Entity";
 
 
 export class Level {
@@ -14,6 +16,9 @@ export class Level {
 
 
   spawnY:number;
+
+
+  entities:Entity[] = [];
 
 
   constructor(
@@ -30,6 +35,12 @@ export class Level {
 
     this.spawnY =
       data.spawn.y;
+
+
+    this.entities =
+      EntitySpawner.create(
+        data.entities ?? []
+      );
 
   }
 

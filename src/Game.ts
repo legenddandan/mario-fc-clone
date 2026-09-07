@@ -2,6 +2,7 @@ import {Input} from "./Input";
 import {Renderer} from "./Renderer";
 import {Mario} from "./entities/Mario";
 import {Level} from "./world/Level";
+import { LevelLoader } from "./world/LevelLoader";
 
 
 export class Game{
@@ -14,7 +15,7 @@ export class Game{
   renderer:Renderer;
 
 
-  level:Level;
+  level!:Level;
 
 
   lastTime=0;
@@ -44,9 +45,6 @@ export class Game{
     this.mario =
       new Mario(this.input);
 
-    this.level = new Level();
-
-
     this.renderer =
       new Renderer(canvas);
 
@@ -60,6 +58,28 @@ export class Game{
     requestAnimationFrame(
       this.loop.bind(this)
     );
+
+  }
+
+
+
+  async init(){
+
+    await this.loadLevel();
+
+  }
+
+
+  async loadLevel(){
+
+    const data =
+      await LevelLoader.load(
+        "/levels/world1-1.json"
+      );
+
+
+    this.level =
+      new Level(data);
 
   }
 

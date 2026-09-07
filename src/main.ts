@@ -32,4 +32,7 @@ const game =
 new Game(canvas);
 
 
+await game.init();
+
+
 game.start();

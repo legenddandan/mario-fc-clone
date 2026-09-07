@@ -212,31 +212,4 @@ export class Mario extends Entity {
 
 
 
-  public resolveGround(y:number){
-
-
-    if(
-      this.position.y+this.height>=y
-    ){
-
-      this.position.y =
-        y-this.height;
-
-
-      this.velocity.y=0;
-
-
-      this.grounded=true;
-
-    } else {
-
-      this.grounded = false;
-
-    }
-
-
-  }
-
-
-
 }

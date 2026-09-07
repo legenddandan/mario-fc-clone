@@ -147,7 +147,7 @@ export class Game{
 
     this.mario.update(delta);
 
-    this.mario.resolveGround(216);
+    this.level.resolveMarioCollision(this.mario);
 
   }
 

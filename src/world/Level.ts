@@ -1,4 +1,6 @@
 import { TileMap } from "./TileMap";
+import { CollisionResolver } from "./CollisionResolver";
+import { Mario } from "../entities/Mario";
 
 
 export class Level {
@@ -24,6 +26,17 @@ export class Level {
         ]
       );
 
+
+  }
+
+
+  resolveMarioCollision(mario: Mario){
+
+
+    CollisionResolver.resolveMario(
+      mario,
+      this.tileMap
+    );
 
   }
 

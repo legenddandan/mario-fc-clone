@@ -4,6 +4,12 @@ import { Tile, TileType } from "./Tile";
 export class TileMap {
 
 
+  width:number;
+
+
+  height:number;
+
+
   tiles:Tile[] = [];
 
 
@@ -13,6 +19,16 @@ export class TileMap {
   constructor(
     data:number[][]
   ){
+
+    this.width =
+      data[0].length *
+      this.tileSize;
+
+
+    this.height =
+      data.length *
+      this.tileSize;
+
 
     this.load(data);
 
@@ -64,3 +80,6 @@ export class TileMap {
 
 
 }
+
+
+export { TileType };

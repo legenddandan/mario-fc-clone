@@ -1,32 +1,29 @@
-import {Mario} from "./entities/Mario";
-import {Debug, type DebugStats} from "./Debug";
-import { TileMap } from "./world/TileMap";
-import { TileType } from "./world/Tile";
+import { Mario } from "./entities/Mario";
+import { TileMap, TileType } from "./world/TileMap";
+import { Camera } from "./world/Camera";
 
 
-export class Renderer{
+export class Renderer {
 
 
   ctx:CanvasRenderingContext2D;
-
-
-  private readonly debug = new Debug();
-
 
 
   constructor(
     private canvas:HTMLCanvasElement
   ){
 
-    this.ctx=
+    this.ctx =
       canvas.getContext("2d")!;
-
 
   }
 
-  
 
-  render(mario:Mario, fps:number){
+  render(
+    mario:Mario,
+    camera:Camera,
+    tileMap:TileMap
+  ){
 
 
     const ctx=this.ctx;
@@ -52,39 +49,54 @@ export class Renderer{
     );
 
 
-
-    // mario placeholder
-
-    ctx.fillStyle="#e52521";
-
-    ctx.fillRect(
-      mario.position.x,
-      mario.position.y,
-      mario.width,
-      mario.height
+    this.renderTileMap(
+      tileMap,
+      camera
     );
 
 
-    this.debug.render(
-      ctx,
-      this.canvas.width,
-      {
-        fps,
-        marioX:mario.position.x,
-        marioY:mario.position.y,
-        velocityX:mario.velocity.x,
-        velocityY:mario.velocity.y
-      } satisfies DebugStats
+    this.renderMario(
+      mario,
+      camera
+    );
+
+  }
+
+
+  private renderMario(
+    mario:Mario,
+    camera:Camera
+  ){
+
+
+    this.ctx.fillStyle="#e52521";
+
+
+    this.ctx.fillRect(
+
+      mario.position.x - camera.x,
+
+      mario.position.y - camera.y,
+
+      mario.width,
+
+      mario.height
+
     );
 
 
   }
 
 
-  renderTileMap(tileMap:TileMap){
+  renderTileMap(
+    tileMap:TileMap,
+    camera:Camera
+  ){
 
 
-    tileMap.tiles.forEach(tile=>{
+    for(
+      const tile of tileMap.tiles
+    ){
 
 
       if(tile.type===TileType.Ground){
@@ -102,14 +114,19 @@ export class Renderer{
 
 
       this.ctx.fillRect(
-        tile.x,
-        tile.y,
+
+        tile.x-camera.x,
+
+        tile.y-camera.y,
+
         tile.size,
+
         tile.size
+
       );
 
 
-    });
+    }
 
 
   }

@@ -3,6 +3,7 @@ import {Renderer} from "./Renderer";
 import {Mario} from "./entities/Mario";
 import {Level} from "./world/Level";
 import { LevelLoader } from "./world/LevelLoader";
+import { Camera } from "./world/Camera";
 
 
 export class Game{
@@ -14,6 +15,7 @@ export class Game{
 
   renderer:Renderer;
 
+  camera:Camera;
 
   level!:Level;
 
@@ -47,6 +49,12 @@ export class Game{
 
     this.renderer =
       new Renderer(canvas);
+
+    this.camera =
+      new Camera(
+        canvas.width,
+        canvas.height
+      );
 
 
   }
@@ -145,11 +153,7 @@ export class Game{
 
     this.renderer.render(
       this.mario,
-      this.fps
-    );
-
-
-    this.renderer.renderTileMap(
+      this.camera,
       this.level.tileMap
     );
 
@@ -158,9 +162,7 @@ export class Game{
       this.loop.bind(this)
     );
 
-
   }
-
 
 
   update(delta:number){
@@ -168,6 +170,13 @@ export class Game{
     this.mario.update(delta);
 
     this.level.resolveMarioCollision(this.mario);
+
+    this.camera.follow(
+      this.mario.position.x,
+      this.mario.position.y,
+      this.level.tileMap.width,
+      this.level.tileMap.height
+    );
 
   }
 

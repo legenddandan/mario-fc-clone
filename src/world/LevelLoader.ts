@@ -1,9 +1,27 @@
+export interface LevelData {
+
+  width:number;
+
+  height:number;
+
+
+  spawn:{
+    x:number;
+    y:number;
+  };
+
+
+  tiles:number[][];
+
+}
+
+
 export class LevelLoader {
 
 
   static async load(
     path:string
-  ):Promise<number[][]>{
+  ):Promise<LevelData>{
 
 
     const response =
@@ -13,7 +31,7 @@ export class LevelLoader {
     if(!response.ok){
 
       throw new Error(
-        `Failed loading level: ${path}`
+        `Failed loading ${path}`
       );
 
     }

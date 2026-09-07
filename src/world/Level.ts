@@ -1,6 +1,7 @@
 import { TileMap } from "./TileMap";
 import { CollisionResolver } from "./CollisionResolver";
 import { Mario } from "../entities/Mario";
+import type { LevelData } from "./LevelLoader";
 
 
 export class Level {
@@ -9,18 +10,33 @@ export class Level {
   tileMap:TileMap;
 
 
+  spawnX:number;
+
+
+  spawnY:number;
+
+
   constructor(
-    data:number[][]
+    data:LevelData
   ){
 
     this.tileMap =
-      new TileMap(data);
+      new TileMap(data.tiles);
 
+
+    this.spawnX =
+      data.spawn.x;
+
+
+    this.spawnY =
+      data.spawn.y;
 
   }
 
 
-  resolveMarioCollision(mario: Mario){
+  resolveMarioCollision(
+    mario: Mario
+  ){
 
 
     CollisionResolver.resolveMario(

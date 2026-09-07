@@ -89,6 +89,14 @@ export class Game{
     this.level =
       new Level(data);
 
+
+    this.mario.position.x =
+      this.level.spawnX;
+
+
+    this.mario.position.y =
+      this.level.spawnY;
+
   }
 
 

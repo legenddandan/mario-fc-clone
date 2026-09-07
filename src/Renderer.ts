@@ -1,4 +1,4 @@
-import {Mario} from "./entities/Mario";
+import {Mario} from "./entities/entities/Mario";
 
 
 export class Renderer{

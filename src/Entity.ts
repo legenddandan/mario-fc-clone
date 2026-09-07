@@ -1,4 +1,4 @@
-import type { Vector2 } from "../types/game";
+import type { Vector2 } from "./types/game";
 
 
 export abstract class Entity {

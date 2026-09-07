@@ -60,6 +60,7 @@ export class Renderer {
       camera
     );
 
+
   }
 
 
@@ -99,16 +100,55 @@ export class Renderer {
     ){
 
 
-      if(tile.type===TileType.Ground){
-
-        this.ctx.fillStyle="#8b4513";
-
-      }
+      switch(tile.type){
 
 
-      if(tile.type===TileType.Brick){
+        case TileType.Ground:
 
-        this.ctx.fillStyle="#b87333";
+          this.ctx.fillStyle="#8b4513";
+
+          break;
+
+
+        case TileType.Brick:
+
+          this.ctx.fillStyle="#b87333";
+
+          break;
+
+
+        case TileType.Question:
+
+          this.ctx.fillStyle="#ffd700";
+
+          break;
+
+
+        case TileType.Pipe:
+
+          this.ctx.fillStyle="#00aa00";
+
+          break;
+
+
+        case TileType.Cloud:
+
+          this.ctx.fillStyle="#ffffff";
+
+          break;
+
+
+        case TileType.Flag:
+
+          this.ctx.fillStyle="#000000";
+
+          break;
+
+
+        default:
+
+          continue;
+
 
       }
 

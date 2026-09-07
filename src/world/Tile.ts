@@ -1,16 +1,29 @@
 export enum TileType {
+
   Empty = 0,
-  Brick = 1,
-  Ground = 2
+
+  Ground = 1,
+
+  Brick = 2,
+
+  Question = 3,
+
+  Pipe = 4,
+
+  Cloud = 5,
+
+  Flag = 6
+
 }
 
 
 export class Tile {
 
+
   constructor(
-    public type: TileType,
-    public x: number,
-    public y: number,
+    public type:TileType,
+    public x:number,
+    public y:number,
     public size:number = 16
   ){}
 
@@ -18,8 +31,10 @@ export class Tile {
   isSolid(){
 
     return (
+      this.type === TileType.Ground ||
       this.type === TileType.Brick ||
-      this.type === TileType.Ground
+      this.type === TileType.Question ||
+      this.type === TileType.Pipe
     );
 
   }

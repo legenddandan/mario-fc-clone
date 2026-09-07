@@ -1,6 +1,7 @@
 import {Input} from "./Input";
 import {Renderer} from "./Renderer";
 import {Mario} from "./entities/Mario";
+import {Level} from "./world/Level";
 
 
 export class Game{
@@ -11,6 +12,9 @@ export class Game{
   mario:Mario;
 
   renderer:Renderer;
+
+
+  level:Level;
 
 
   lastTime=0;
@@ -39,6 +43,8 @@ export class Game{
 
     this.mario =
       new Mario(this.input);
+
+    this.level = new Level();
 
 
     this.renderer =
@@ -120,6 +126,11 @@ export class Game{
     this.renderer.render(
       this.mario,
       this.fps
+    );
+
+
+    this.renderer.renderTileMap(
+      this.level.tileMap
     );
 
 

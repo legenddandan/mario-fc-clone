@@ -1,5 +1,7 @@
 import {Mario} from "./entities/Mario";
 import {Debug, type DebugStats} from "./Debug";
+import { TileMap } from "./world/TileMap";
+import { TileType } from "./world/Tile";
 
 
 export class Renderer{
@@ -9,9 +11,6 @@ export class Renderer{
 
 
   private readonly debug = new Debug();
-
-
-  private readonly groundHeight = 32;
 
 
 
@@ -54,21 +53,6 @@ export class Renderer{
 
 
 
-    // ground
-
-    ctx.fillStyle="#8b4513";
-
-    const groundY = this.canvas.height - this.groundHeight;
-
-    ctx.fillRect(
-      0,
-      groundY,
-      this.canvas.width,
-      this.groundHeight
-    );
-
-
-
     // mario placeholder
 
     ctx.fillStyle="#e52521";
@@ -92,6 +76,40 @@ export class Renderer{
         velocityY:mario.velocity.y
       } satisfies DebugStats
     );
+
+
+  }
+
+
+  renderTileMap(tileMap:TileMap){
+
+
+    tileMap.tiles.forEach(tile=>{
+
+
+      if(tile.type===TileType.Ground){
+
+        this.ctx.fillStyle="#8b4513";
+
+      }
+
+
+      if(tile.type===TileType.Brick){
+
+        this.ctx.fillStyle="#b87333";
+
+      }
+
+
+      this.ctx.fillRect(
+        tile.x,
+        tile.y,
+        tile.size,
+        tile.size
+      );
+
+
+    });
 
 
   }

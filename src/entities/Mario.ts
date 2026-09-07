@@ -70,7 +70,8 @@ export class Mario extends Entity {
     this.position.y += this.velocity.y * delta;
 
 
-    this.handleGround();
+    // ground collision is now handled outside Mario,
+    // so only movement/jump/gravity updates remain here.
 
 
   }
@@ -211,18 +212,15 @@ export class Mario extends Entity {
 
 
 
-  private handleGround(){
-
-
-    const groundY=216;
+  public resolveGround(y:number){
 
 
     if(
-      this.position.y+this.height>=groundY
+      this.position.y+this.height>=y
     ){
 
       this.position.y =
-        groundY-this.height;
+        y-this.height;
 
 
       this.velocity.y=0;
@@ -230,6 +228,9 @@ export class Mario extends Entity {
 
       this.grounded=true;
 
+    } else {
+
+      this.grounded = false;
 
     }
 

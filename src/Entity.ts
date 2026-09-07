@@ -35,4 +35,16 @@ export abstract class Entity {
   abstract update(delta:number):void;
 
 
+  getBounds(){
+
+    return {
+      x:this.position.x,
+      y:this.position.y,
+      width:this.width,
+      height:this.height
+    };
+
+  }
+
+
 }

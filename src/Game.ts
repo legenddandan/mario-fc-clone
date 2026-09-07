@@ -136,6 +136,8 @@ export class Game{
 
     this.mario.update(delta);
 
+    this.mario.resolveGround(216);
+
   }
 
 

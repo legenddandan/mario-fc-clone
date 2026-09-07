@@ -1,69 +1,55 @@
-import {Entity} from "../Entity";
-import {Input} from "../Input";
+import { Entity } from "../Entity";
+import { Input } from "../Input";
 
 
-export class Mario extends Entity{
+export class Mario extends Entity {
+
+  private input: Input;
 
 
-  private input:Input;
+  // ===== FC 风格移动参数 =====
+
+  // 最大速度
+  walkSpeed = 90;
+
+  runSpeed = 150;
 
 
-  walkSpeed=90;
+  // 加速度
+  acceleration = 700;
+
+  // 摩擦力
+  friction = 0.82;
 
 
-  runSpeed=160;
+  // 跳跃
+  jumpForce = 320;
+
+  gravity = 900;
 
 
-  acceleration=700;
+  // 空中控制比例
+  airControl = 0.45;
 
 
-  airAcceleration=350;
+  // 状态
+
+  grounded = false;
+
+  facing = 1;
 
 
-  friction=0.82;
+  private jumpHeld = false;
 
 
-  airFriction=0.97;
+  constructor(input: Input) {
 
+    super(40, 150);
 
-  jumpForce=260;
+    this.input = input;
 
-
-  gravity=900;
-
-
-  private maxFallSpeed=900;
-
-
-  private jumpHoldCut=0.5;
-
-
-  private ground=208;
-
-
-  grounded=false;
-
-
-  private prevJumpPressed=false;
-
-
-  private isRunning=false;
-
-
-
-  constructor(input:Input){
-
-
-    super(100,176);
-
-
-    this.input=input;
-
-
-    this.width=24;
-
-    this.height=32;
-
+    this.width = 16;
+    this.height = 24;
 
   }
 
@@ -72,126 +58,95 @@ export class Mario extends Entity{
   update(delta:number){
 
 
-    this.handleInput(delta);
+    this.handleMovement(delta);
 
-
-    this.applyHorizontalMovement(delta);
-
-
-    this.applyJump(delta);
-
+    this.handleJump();
 
     this.applyGravity(delta);
 
 
-    this.applyMovement(delta);
+    this.position.x += this.velocity.x * delta;
+
+    this.position.y += this.velocity.y * delta;
 
 
-    this.applyGroundCollision();
-
-
-    this.prevJumpPressed =
-      this.input.isDown("ArrowUp");
-
-  }
-
-
-
-  private handleInput(_delta:number){
-
-
-    this.isRunning =
-      this.input.isDown("ShiftLeft")
-      ||
-      this.input.isDown("ShiftRight");
+    this.handleGround();
 
 
   }
 
 
-  private applyHorizontalMovement(delta:number){
+
+  private handleMovement(delta:number){
 
 
-    const left = this.input.isDown("ArrowLeft");
+    let direction = 0;
 
 
-    const right = this.input.isDown("ArrowRight");
+    if(this.input.isDown("ArrowLeft")){
 
-
-    const inputX =
-      (left ? -1 : 0)
-      +
-      (right ? 1 : 0);
-
-
-    if(inputX===0){
-
-
-      this.applyFriction(delta);
-
-
-      return;
-
+      direction=-1;
 
     }
 
 
-    const maxSpeed =
-      this.isRunning
+    if(this.input.isDown("ArrowRight")){
+
+      direction=1;
+
+    }
+
+
+
+    if(direction!==0){
+
+
+      this.facing=direction;
+
+
+      const acceleration =
+        this.grounded
+        ? this.acceleration
+        : this.acceleration*this.airControl;
+
+
+
+      this.velocity.x +=
+        direction * acceleration * delta;
+
+
+
+      const maxSpeed =
+        this.input.isDown("KeyZ")
         ? this.runSpeed
         : this.walkSpeed;
 
 
-    const accel =
-      this.grounded
-        ? this.acceleration
-        : this.airAcceleration;
+      if(this.velocity.x > maxSpeed){
 
+        this.velocity.x=maxSpeed;
 
-    const deltaVelocity =
-      inputX * accel * delta;
+      }
 
+      if(this.velocity.x < -maxSpeed){
 
-    this.velocity.x +=
-      deltaVelocity;
+        this.velocity.x=-maxSpeed;
 
-
-    const targetDirection =
-      this.velocity.x >= 0
-        ? 1
-        : -1;
-
-
-    const shouldClamp =
-      targetDirection ===
-      Math.sign(inputX);
-
-
-    if(
-      shouldClamp
-      &&
-      Math.abs(this.velocity.x) > maxSpeed
-    ){
-
-
-      this.velocity.x =
-        Math.sign(inputX) * maxSpeed;
+      }
 
 
     }
+    else {
 
 
-    if(!shouldClamp){
+      // 摩擦减速
+
+      this.velocity.x *= this.friction;
 
 
-      if(
-        Math.abs(this.velocity.x) < 5
-      ){
+      if(Math.abs(this.velocity.x)<1){
 
-
-        this.velocity.x =
-          Math.sign(inputX) * 5;
-
+        this.velocity.x=0;
 
       }
 
@@ -202,74 +157,42 @@ export class Mario extends Entity{
   }
 
 
-  private applyFriction(delta:number){
+
+  private handleJump(){
 
 
-    const damping =
-      this.grounded
-        ? this.friction
-        : this.airFriction;
-
-
-    this.velocity.x *=
-      Math.pow(damping, delta * 60);
-
-
-    if(
-      Math.abs(this.velocity.x) < 0.01
-    ){
-
-
-      this.velocity.x=0;
-
-
-    }
-
-
-  }
-
-
-  private applyJump(delta:number){
-
-
-    const jumpDown =
+    const jump =
       this.input.isDown("ArrowUp");
 
 
+
+    // 起跳
+
     if(
-      jumpDown
-      &&
-      !this.prevJumpPressed
-      &&
-      this.grounded
+      jump &&
+      this.grounded &&
+      !this.jumpHeld
     ){
 
+      this.velocity.y=-this.jumpForce;
 
-      this.velocity.y =
-        -this.jumpForce;
-
-
-      this.grounded =
-        false;
-
+      this.grounded=false;
 
     }
 
 
+    this.jumpHeld=jump;
+
+
+
+    // 松开提前下降
+
     if(
-      !jumpDown
-      &&
-      this.prevJumpPressed
-      &&
-      !this.grounded
-      &&
-      this.velocity.y < 0
+      !jump &&
+      this.velocity.y < -100
     ){
 
-
-      this.velocity.y *=
-        this.jumpHoldCut;
-
+      this.velocity.y*=0.5;
 
     }
 
@@ -281,52 +204,31 @@ export class Mario extends Entity{
 
 
     this.velocity.y +=
-      this.gravity * delta;
-
-
-    if(this.velocity.y > this.maxFallSpeed){
-
-
-      this.velocity.y =
-        this.maxFallSpeed;
-
-
-    }
+      this.gravity*delta;
 
 
   }
 
 
-  private applyMovement(delta:number){
+
+  private handleGround(){
 
 
-    this.position.x +=
-      this.velocity.x * delta;
+    const groundY=216;
 
 
-    this.position.y +=
-      this.velocity.y * delta;
-
-
-  }
-
-
-  private applyGroundCollision(){
-
-
-    if(this.position.y + this.height >= this.ground){
-
+    if(
+      this.position.y+this.height>=groundY
+    ){
 
       this.position.y =
-        this.ground - this.height;
+        groundY-this.height;
 
 
-      this.velocity.y =
-        0;
+      this.velocity.y=0;
 
 
-      this.grounded =
-        true;
+      this.grounded=true;
 
 
     }
